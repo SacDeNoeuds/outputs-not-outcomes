@@ -1,0 +1,31 @@
+{
+  "name": "outputs-not-outcomes",
+  "version": "0.1.0",
+  "description": "Using Promise as Result",
+  "main": "src/main.js",
+  "types": "./src/result.d.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SacDeNoeuds/outputs-not-outcomes.git"
+  },
+  "keywords": [
+    "result",
+    "adt",
+    "promise"
+  ],
+  "author": "Sac De Noeuds <sacdenoeuds.dev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SacDeNoeuds/outputs-not-outcomes/issues"
+  },
+  "homepage": "https://github.com/SacDeNoeuds/outputs-not-outcomes#readme",
+  "devDependencies": {
+    "@types/node": "^24.4.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
