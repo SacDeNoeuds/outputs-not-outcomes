@@ -11,6 +11,24 @@ async function it_captures_errors_in_constructor_executor() {
   await assert.rejects(result, RuntimeError)
 }
 
+async function it_captures_errors_in_constructor_executor_resolve_promise_like() {
+  const promiseLike = new Promise((_, reject) => reject('oops'))
+  const result = new Result<never, void>((resolve) => {
+    // @ts-expect-error
+    resolve(promiseLike)
+  })
+  await assert.rejects(result, RuntimeError)
+}
+
+async function it_captures_errors_in_constructor_executor_reject_promise_like() {
+  const promiseLike = new Promise((_, reject) => reject('oops'))
+  const result = new Result<never, void>((_, reject) => {
+    // @ts-expect-error
+    reject(promiseLike)
+  })
+  await assert.rejects(result, RuntimeError)
+}
+
 async function it_captures_errors_in_then() {
   const result = Result.resolve(1).then(() => {
     // @ts-expect-error
@@ -55,6 +73,8 @@ async function it_captures_error_in_returned_promise_like_in_catch() {
 
 const tests = [
   it_captures_errors_in_constructor_executor,
+  // it_captures_errors_in_constructor_executor_resolve_promise_like,
+  // it_captures_errors_in_constructor_executor_reject_promise_like,
   it_captures_errors_in_then,
   it_captures_errors_in_catch,
   it_captures_error_in_resolve_promise_like,
