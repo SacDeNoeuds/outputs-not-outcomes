@@ -2,8 +2,6 @@ import type { RuntimeError } from './runtime-error.js'
 
 export declare const Result: ResultConstructor;
 
-// export 
-
 interface ResultConstructor {
   /**
      * A reference to the prototype.
@@ -79,6 +77,14 @@ interface ResultConstructor {
      * @returns A promise whose internal state matches the provided promise.
      */
     resolve<T>(value: T): Result<never, Awaited<T>>;
+
+  withResolvers<Reason, Value>(): ResultWithResolvers<Reason, Value>
+}
+
+export interface ResultWithResolvers<Reason, Value> {
+    result: Result<Reason, Value>;
+    resolve: (value: Value | PromiseLike<Value>) => void;
+    reject: (...args: ([void] extends [Reason] ? [] : [reason: Reason])) => void;
 }
 
 export type ReasonOf<T> = T extends null | undefined

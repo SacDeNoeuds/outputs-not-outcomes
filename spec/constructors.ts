@@ -1,4 +1,4 @@
-import { Result } from '../src/result'
+import { Result } from '../src/result.js'
 
 class MyCustomError {}
 interface MyResult {}

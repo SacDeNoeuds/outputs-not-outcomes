@@ -1,6 +1,6 @@
 import assert from "node:assert"
 import { Result } from "../src/result.js"
-import { RuntimeError } from "../src/runtime-error"
+import { RuntimeError } from "../src/runtime-error.js"
 
 async function it_captures_errors_in_constructor_executor() {
   const result = new Result<never, void>((resolve) => {
@@ -48,26 +48,33 @@ async function it_captures_errors_in_catch() {
 }
 
 async function it_captures_error_in_resolve_promise_like() {
-  const promise = new Promise((_, reject) => reject("oops"))
+  const promise = Promise.reject("oops")
   const result = Result.resolve(promise)
   await assert.rejects(result, RuntimeError)
 }
 
 async function it_captures_error_in_reject_promise_like() {
-  const promise = new Promise((_, reject) => reject("oops"))
+  const promise = Promise.reject("oops")
   const result = Result.reject(promise)
   await assert.rejects(result, RuntimeError)
 }
 
 async function it_captures_error_in_returned_promise_like_in_then() {
-  const promise = new Promise((_, reject) => reject("oops"))
+  const promise = Promise.reject("oops")
   const result = Result.resolve(1).then(() => promise)
   await assert.rejects(result, RuntimeError)
 }
 
 async function it_captures_error_in_returned_promise_like_in_catch() {
-  const promise = new Promise((_, reject) => reject("oops"))
+  const promise = Promise.reject("oops")
   const result = Result.reject(1).catch(() => promise)
+  await assert.rejects(result, RuntimeError)
+}
+
+async function it_captures_error_in_resolver_resolve() {
+  const promise = Promise.reject('damn')
+  const { resolve, result } = Result.withResolvers<'hey', number>()
+  resolve(promise)
   await assert.rejects(result, RuntimeError)
 }
 
@@ -81,6 +88,7 @@ const tests = [
   it_captures_error_in_reject_promise_like,
   it_captures_error_in_returned_promise_like_in_then,
   it_captures_error_in_returned_promise_like_in_catch,
+  it_captures_error_in_resolver_resolve,
 ]
 const filename = import.meta.filename
   .replace(import.meta.dirname, "")

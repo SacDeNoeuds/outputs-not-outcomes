@@ -29,6 +29,16 @@ export class Result extends Promise {
     })
   }
 
+  static withResolvers() {
+    const resolvers = {}
+    const result = new Result((resolve, reject) => {
+      resolvers.resolve = (value) => resolve(Result.resolve(value))
+      resolvers.reject = reject
+    })
+    resolvers.result = result
+    return resolvers
+  }
+
   constructor(executor) {
     super((resolve, reject) => {
       try {
