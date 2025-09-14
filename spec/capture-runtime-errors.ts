@@ -75,11 +75,15 @@ async function run_tests() {
 }
 
 run_tests().then(
-  () => console.info(filename, "– Tests passed ✅"),
+  () => {
+    console.info(filename, "– Tests passed ✅")
+    process.exit(0)
+  },
   (error) => {
     console.info(filename, "– Tests failed ❌")
     console.info()
     console.error(error)
     console.info()
+    process.exit(1)
   },
 )

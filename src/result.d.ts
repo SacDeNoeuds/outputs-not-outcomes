@@ -59,25 +59,26 @@ interface ResultConstructor {
      * @returns A new rejected Promise.
      */
     reject(): Result<void, never>;
+    reject<Reason>(reason: PromiseLike<Reason>): Result<Reason | RuntimeError, never>;
     reject<Reason>(reason: Reason): Result<Reason, never>;
 
     /**
      * Creates a new resolved promise.
      * @returns A resolved promise.
      */
-    resolve(): Promise<void>;
+    resolve(): Result<never, void>;
+    /**
+     * Creates a new resolved result for the provided value.
+     * @param value A result.
+     * @returns A result whose internal state matches the provided promise.
+     */
+    resolve<T>(value: PromiseLike<T>): Result<RuntimeError, Awaited<T>>;
     /**
      * Creates a new resolved promise for the provided value.
      * @param value A promise.
      * @returns A promise whose internal state matches the provided promise.
      */
     resolve<T>(value: T): Result<never, Awaited<T>>;
-    /**
-     * Creates a new resolved promise for the provided value.
-     * @param value A promise.
-     * @returns A promise whose internal state matches the provided promise.
-     */
-    resolve<T>(value: T | PromiseLike<T>): Result<never, Awaited<T>>;
 }
 
 export type ReasonOf<T> = T extends null | undefined

@@ -14,17 +14,19 @@ function isPromiseLike(value) {
 }
 export class Result extends Promise {
   static resolve(value) {
-    if (!isPromiseLike(value)) return super.resolve(value)
-    return value.then(super.resolve, (error) =>
-      super.reject(new RuntimeError(error)),
-    )
+    if (value instanceof Result) return value
+    return new Result((resolve, reject) => {
+      if (!isPromiseLike(value)) resolve(value)
+      else value.then(resolve, (error) => reject(new RuntimeError(error)))
+    })
   }
 
   static reject(value) {
-    if (!isPromiseLike(value)) return super.reject(value)
-    return value.then(super.reject, (error) =>
-      super.reject(new RuntimeError(error)),
-    )
+    if (value instanceof Result) return value
+    return new Result((_, reject) => {
+      if (!isPromiseLike(value)) reject(value)
+      else value.then(reject, (error) => reject(new RuntimeError(error)))
+    })
   }
 
   constructor(executor) {
@@ -47,9 +49,7 @@ export class Result extends Promise {
 function catchSyncRuntimeError(callback) {
   return (value) => {
     try {
-      const got = callback(value)
-      if (!isPromiseLike(got)) return got
-      return Result.resolve(got)
+      return Result.resolve(callback(value))
     } catch (error) {
       return Promise.reject(new RuntimeError(error))
     }
